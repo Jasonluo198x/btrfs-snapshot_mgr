@@ -14,10 +14,12 @@ My usage:
 
 vi take_snapshot.sh
 
-`
+```
 #!/bin/bash
+
 /root/scripts/tools/btrfs/snapshot_mgr -s "/" -d "/mnt/hdd/.snapshots_repo" -n "$HOSTNAME" -c "ssh nas.host -p 1122"
-`
+```
+
 
 
 crontab -l
