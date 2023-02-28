@@ -145,14 +145,18 @@ else
 fi
 echo "send latest snapshot to destination"
 
-btrfs send $opt $local_snapshots_path/$snapshot_name | do_exec "btrfs receive $repo" "$ssh_cmd"
+sent=`btrfs send $opt $local_snapshots_path/$snapshot_name | do_exec "btrfs receive $repo" "$ssh_cmd"`
 
-
-echo "check local keeps"
-do_expired_clean "$local_snapshots_path" "$task_name" "$local_keep" 
-
-echo "check remote keeps"
-do_expired_clean "$repo" "$task_name" "$remote_keep" "$ssh_cmd"
+if [[ "$sent" =~ "At" ]];
+then
+	echo "send succeed"
+	echo "check local keeps"
+	do_expired_clean "$local_snapshots_path" "$task_name" "$local_keep"
+	echo "check remote keeps"
+	do_expired_clean "$repo" "$task_name" "$remote_keep" "$ssh_cmd"
+else
+	echo "send failed"
+fi
 
 echo "=========== TASK END : "`date -R`" ==========="
 
